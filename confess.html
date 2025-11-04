@@ -29,7 +29,6 @@
         }
 
         .screen {
-            opacity: 0;
             min-height: 200px;
             display: none;
             flex-direction: column;
@@ -38,7 +37,7 @@
 
         .screen.active {
             display: flex;
-            animation: fadeIn 2s forwards;
+            opacity: 1;
         }
 
         .question-text {
@@ -312,6 +311,24 @@
             <button onclick="advance(9)" id="btn9" disabled>Continue</button>
         </div>
 
+        <div class="screen" id="waitingScreen">
+            <div style="text-align: center;">
+                <div style="font-size: 20px; margin-bottom: 40px; letter-spacing: 2px;">
+                    Processing your confession...
+                </div>
+                <div style="font-size: 16px; opacity: 0.6; margin-bottom: 50px;">
+                    Your judgment is being prepared.
+                </div>
+                <button onclick="showFinalVerdict()" style="font-size: 16px; padding: 15px 40px;">
+                    RECEIVE VERDICT
+                </button>
+                <br><br>
+                <button onclick="testVerdict()" style="font-size: 12px; padding: 10px 20px; opacity: 0.5;">
+                    TEST - Force Show Verdict
+                </button>
+            </div>
+        </div>
+
         <div class="screen" id="verdictScreen">
             <div class="verdict" id="verdictContent"></div>
         </div>
@@ -372,7 +389,14 @@
             }
             
             setTimeout(() => {
-                const next = document.getElementById(n === 'verdict' ? 'verdictScreen' : `screen${n}`);
+                let next;
+                if (n === 'verdict') {
+                    next = document.getElementById('verdictScreen');
+                } else if (n === 'waiting') {
+                    next = document.getElementById('waitingScreen');
+                } else {
+                    next = document.getElementById(`screen${n}`);
+                }
                 if (next) {
                     next.classList.add('active');
                     currentScreen = n;
@@ -409,7 +433,10 @@
                         answers.opensDaily = 0;
                         answers.postedToday = 'no';
                         answers.lastBored = 'today';
-                        setTimeout(() => generateVerdict(), 3000);
+                        setTimeout(() => {
+                            generateVerdict();
+                            showScreen('waiting');
+                        }, 3000);
                         return;
                     }
                     showScreen(4);
@@ -440,7 +467,10 @@
                     break;
                 case 9:
                     answers.afraid = document.querySelector('input[name="afraid"]:checked').value;
-                    setTimeout(() => generateVerdict(), 3000);
+                    setTimeout(() => {
+                        generateVerdict();
+                        showScreen('waiting');
+                    }, 3000);
                     break;
             }
         }
@@ -456,11 +486,17 @@
             const yearsRemaining = lifeExpectancy - age;
             const daysRemaining = Math.round(yearsRemaining * 365);
 
+            // Debug logging
+            console.log('All answers:', answers);
+            console.log('Hours Daily:', hoursDaily);
+            console.log('Opens Daily:', answers.opensDaily);
+            console.log('Posted Today:', answers.postedToday);
+
             // Determine assignment based on usage
             let room, roomDescription, duration;
             const usageScore = hoursDaily * 10 + (answers.opensDaily || 0) * 0.5 + (answers.postedToday === 'yes' ? 20 : 0);
             
-            console.log('Usage Score:', usageScore); // Debug
+            console.log('Usage Score:', usageScore);
             
             if (platform === "None" || hoursDaily < 1) {
                 room = "The Exit";
@@ -476,7 +512,8 @@
                 duration = Math.min(Math.round(hoursDaily * 7), 45);
             }
 
-            console.log('Room:', room); // Debug
+            console.log('Assigned Room:', room);
+            console.log('Room Description:', roomDescription);
 
             const now = new Date();
             const appointmentTime = new Date(now.getTime() + 30 * 60000);
@@ -528,7 +565,7 @@
                 </div>
 
                 <div class="room-assignment">
-                    ${room}
+                    ASSIGNED ROOM: ${room}
                     <div class="room-description">${roomDescription}</div>
                 </div>
 
@@ -552,8 +589,37 @@
                 </div>
             `;
 
+            console.log('Generated HTML contains room:', verdictHTML.includes(room));
             document.getElementById('verdictContent').innerHTML = verdictHTML;
+        }
+
+        function showFinalVerdict() {
+            console.log('Showing final verdict screen');
+            console.log('Verdict content element exists:', !!document.getElementById('verdictContent'));
+            console.log('Verdict content innerHTML length:', document.getElementById('verdictContent').innerHTML.length);
+            console.log('Verdict screen element:', document.getElementById('verdictScreen'));
             showScreen('verdict');
+            
+            // Force check after animation
+            setTimeout(() => {
+                const verdictScreen = document.getElementById('verdictScreen');
+                console.log('Verdict screen is active:', verdictScreen.classList.contains('active'));
+                console.log('Verdict screen display:', window.getComputedStyle(verdictScreen).display);
+                console.log('Verdict screen opacity:', window.getComputedStyle(verdictScreen).opacity);
+            }, 1000);
+        }
+
+        function testVerdict() {
+            // Brutally force it to show
+            const waitingScreen = document.getElementById('waitingScreen');
+            const verdictScreen = document.getElementById('verdictScreen');
+            
+            waitingScreen.style.display = 'none';
+            verdictScreen.style.display = 'flex';
+            verdictScreen.style.opacity = '1';
+            verdictScreen.classList.add('active');
+            
+            console.log('FORCED verdict screen visible');
         }
     </script>
 </body>
