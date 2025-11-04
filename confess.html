@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Confession</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000;
+            color: #d4d4d4;
+            font-family: 'Courier New', monospace;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .container {
+            max-width: 700px;
+            width: 90%;
+            padding: 40px;
+        }
+
+        .question {
+            opacity: 0;
+            min-height: 200px;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .question.active {
+            display: flex;
+            animation: fadeIn 2s forwards;
+        }
+
+        .question-text {
+            font-size: 24px;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            letter-spacing: 0.5px;
+        }
+
+        .previous-answers {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            font-size: 11px;
+            opacity: 0.3;
+            max-width: 200px;
+            text-align: right;
+            line-height: 1.8;
+        }
+
+        input[type="number"],
+        input[type="text"],
+        select {
+            background: #0a0a0a;
+            border: 1px solid #333;
+            color: #d4d4d4;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            width: 100%;
+            max-width: 300px;
+            margin-bottom: 20px;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #666;
+        }
+
+        button {
+            background: transparent;
+            border: 1px solid #444;
+            color: #d4d4d4;
+            padding: 12px 30px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 1px;
+        }
+
+        button:hover:not(:disabled) {
+            border-color: #888;
+            background: #111;
+        }
+
+        button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .intro {
+            text-align: center;
+            font-size: 28px;
+            line-height: 2;
+            letter-spacing: 1px;
+        }
+
+        .verdict {
+            font-size: 16px;
+            line-height: 2.2;
+            letter-spacing: 0.5px;
+        }
+
+        .verdict-title {
+            font-size: 20px;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 15px;
+        }
+
+        .verdict-section {
+            margin: 25px 0;
+        }
+
+        .verdict-label {
+            opacity: 0.6;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        .verdict-value {
+            font-size: 18px;
+            margin: 5px 0 15px 0;
+        }
+
+        .diagnosis {
+            color: #8b0000;
+            font-size: 22px;
+            margin: 40px 0;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        .assignment {
+            border: 1px solid #333;
+            padding: 30px;
+            margin: 40px 0;
+            background: #0a0a0a;
+        }
+
+        .final-note {
+            margin-top: 50px;
+            opacity: 0.5;
+            font-size: 12px;
+            text-align: center;
+            font-style: italic;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes typewriter {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        .typing {
+            overflow: hidden;
+            white-space: nowrap;
+            display: inline-block;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .radio-option input[type="radio"] {
+            width: auto;
+            margin: 0;
+        }
+
+        .radio-option label {
+            cursor: pointer;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="previous-answers" id="previousAnswers"></div>
+        
+        <div id="intro" class="question active">
+            <div class="intro">
+                <div class="typing" id="line1">How much time do you have left?</div>
+                <div class="typing" id="line2" style="display:none; margin-top: 40px;">Let's find out.</div>
+            </div>
+        </div>
+
+        <div class="question" data-q="1">
+            <div class="question-text">What is your name?<br><span style="font-size: 14px; opacity: 0.6;">Or leave it blank.</span></div>
+            <input type="text" id="name" placeholder="Anonymous">
+            <button onclick="nextQuestion(1)" id="btn1">Continue</button>
+        </div>
+
+        <div class="question" data-q="2">
+            <div class="question-text">How old are you?</div>
+            <input type="number" id="age" min="13" max="100">
+            <button onclick="nextQuestion(2)" id="btn2" disabled>Continue</button>
+        </div>
+
+        <div class="question" data-q="2">
+            <div class="question-text">How old are you?</div>
+            <input type="number" id="age" min="13" max="100">
+            <button onclick="nextQuestion(2)" id="btn2" disabled>Continue</button>
+        </div>
+
+        <div class="question" data-q="3">
+            <div class="question-text">Which platform do you use most?</div>
+            <select id="platform">
+                <option value="">Select one</option>
+                <option value="Instagram">Instagram</option>
+                <option value="TikTok">TikTok</option>
+                <option value="Facebook">Facebook</option>
+                <option value="Twitter/X">Twitter/X</option>
+                <option value="Snapchat">Snapchat</option>
+                <option value="None">None / I don't use social media</option>
+            </select>
+            <button onclick="nextQuestion(3)" id="btn3" disabled>Continue</button>
+        </div>
+
+        <div class="question" data-q="4">
+            <div class="question-text">When did you join?</div>
+            <input type="number" id="yearJoined" min="2004" max="2025" placeholder="Year">
+            <button onclick="nextQuestion(4)" id="btn4" disabled>Continue</button>
+        </div>
+
+        <div class="question" data-q="5">
+            <div class="question-text">How many hours a day do you spend there?<br><span style="font-size: 14px; opacity: 0.6;">Be honest.</span></div>
+            <input type="number" id="hoursDaily" min="0" max="24" step="0.5">
+            <button onclick="nextQuestion(5)" id="btn5" disabled>Continue</button>
+        </div>
+
+        <div class="question" data-q="6">
+            <div class="question-text">How many times do you open it without thinking?</div>
+            <input type="number" id="opensDaily" min="0" max="500">
+            <button onclick="nextQuestion(6)" id="btn6" disabled>Continue</button>
+        </div>
+
+        <div class="question" data-q="7">
+            <div class="question-text">Have you posted today?</div>
+            <div class="radio-group">
+                <div class="radio-option">
+                    <input type="radio" id="postedYes" name="posted" value="yes">
+                    <label for="postedYes">Yes</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="postedNo" name="posted" value="no">
+                    <label for="postedNo">No</label>
+                </div>
+            </div>
+            <button onclick="nextQuestion(7)" id="btn7" disabled>Continue</button>
+        </div>
+
+        <div class="question" data-q="8">
+            <div class="question-text">When was the last time you were bored without reaching for your phone?</div>
+            <select id="lastBored">
+                <option value="">Select one</option>
+                <option value="today">Today</option>
+                <option value="week">This week</option>
+                <option value="month">This month</option>
+                <option value="year">This year</option>
+                <option value="never">I can't remember</option>
+            </select>
+            <button onclick="nextQuestion(8)" id="btn8" disabled>Continue</button>
+        </div>
+
+        <div class="question" data-q="9">
+            <div class="question-text">Do you think you're afraid of dying?</div>
+            <div class="radio-group">
+                <div class="radio-option">
+                    <input type="radio" id="afraidYes" name="afraid" value="yes">
+                    <label for="afraidYes">Yes</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="afraidNo" name="afraid" value="no">
+                    <label for="afraidNo">No</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="afraidUnsure" name="afraid" value="unsure">
+                    <label for="afraidUnsure">I don't know</label>
+                </div>
+            </div>
+            <button onclick="nextQuestion(9)" id="btn9" disabled>Continue</button>
+        </div>
+
+        <div class="question" data-q="verdict" id="verdictSection">
+            <div class="verdict" id="verdictContent"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentQ = 0;
+        const answers = {};
+        let canProgress = false;
+
+        // Intro animation
+        setTimeout(() => {
+            document.getElementById('line1').style.animation = 'typewriter 2s steps(30)';
+            setTimeout(() => {
+                document.getElementById('line2').style.display = 'block';
+                document.getElementById('line2').style.animation = 'typewriter 1.5s steps(20)';
+                setTimeout(() => {
+                    canProgress = true;
+                    setTimeout(() => {
+                        if (canProgress) showQuestion(1);
+                    }, 2000);
+                }, 2000);
+            }, 3000);
+        }, 1000);
+
+        // Input validation
+        document.getElementById('age').addEventListener('input', (e) => {
+            document.getElementById('btn2').disabled = !e.target.value || e.target.value < 13;
+        });
+
+        document.getElementById('platform').addEventListener('change', (e) => {
+            document.getElementById('btn3').disabled = !e.target.value;
+        });
+
+        document.getElementById('yearJoined').addEventListener('input', (e) => {
+            document.getElementById('btn4').disabled = !e.target.value;
+        });
+
+        document.getElementById('hoursDaily').addEventListener('input', (e) => {
+            document.getElementById('btn5').disabled = e.target.value === '';
+        });
+
+        document.getElementById('opensDaily').addEventListener('input', (e) => {
+            document.getElementById('btn6').disabled = e.target.value === '';
+        });
+
+        document.querySelectorAll('input[name="posted"]').forEach(radio => {
+            radio.addEventListener('change', () => {
+                document.getElementById('btn7').disabled = false;
+            });
+        });
+
+        document.getElementById('lastBored').addEventListener('change', (e) => {
+            document.getElementById('btn8').disabled = !e.target.value;
+        });
+
+        document.querySelectorAll('input[name="afraid"]').forEach(radio => {
+            radio.addEventListener('change', () => {
+                document.getElementById('btn9').disabled = false;
+            });
+        });
+
+        function showQuestion(n) {
+            const current = document.querySelector('.question.active');
+            if (current) {
+                current.classList.remove('active');
+            }
+            
+            setTimeout(() => {
+                let next;
+                if (n === 'verdict') {
+                    next = document.getElementById('verdictSection');
+                } else {
+                    next = document.querySelector(`[data-q="${n}"]`);
+                }
+                if (next) {
+                    next.classList.add('active');
+                    currentQ = n;
+                }
+            }, 800);
+        }
+
+        function nextQuestion(n) {
+            // Save answer
+            switch(n) {
+                case 1:
+                    answers.name = document.getElementById('name').value.trim() || 'Anonymous';
+                    if (answers.name !== 'Anonymous') {
+                        updatePrevious(`Name: ${answers.name}`);
+                    }
+                    break;
+                case 2:
+                    answers.age = parseInt(document.getElementById('age').value);
+                    updatePrevious(`Age: ${answers.age}`);
+                    break;
+                case 3:
+                    answers.platform = document.getElementById('platform').value;
+                    updatePrevious(`Platform: ${answers.platform}`);
+                    break;
+                case 4:
+                    answers.yearJoined = parseInt(document.getElementById('yearJoined').value);
+                    answers.yearsActive = 2025 - answers.yearJoined;
+                    updatePrevious(`Joined: ${answers.yearJoined}`);
+                    break;
+                case 5:
+                    answers.hoursDaily = parseFloat(document.getElementById('hoursDaily').value);
+                    updatePrevious(`Daily: ${answers.hoursDaily}h`);
+                    break;
+                case 6:
+                    answers.opensDaily = parseInt(document.getElementById('opensDaily').value);
+                    updatePrevious(`Opens: ${answers.opensDaily}/day`);
+                    break;
+                case 7:
+                    answers.postedToday = document.querySelector('input[name="posted"]:checked').value;
+                    break;
+                case 8:
+                    answers.lastBored = document.getElementById('lastBored').value;
+                    break;
+                case 9:
+                    answers.afraid = document.querySelector('input[name="afraid"]:checked').value;
+                    setTimeout(() => showVerdict(), 3000);
+                    return;
+            }
+
+            if (n < 9) {
+                setTimeout(() => showQuestion(n + 1), 1500);
+            }
+        }
+
+        function updatePrevious(text) {
+            const prev = document.getElementById('previousAnswers');
+            prev.innerHTML += text + '<br>';
+        }
+
+        function showVerdict() {
+            const current = document.querySelector('.question.active');
+            current.classList.remove('active');
+
+            // Calculate metrics
+            const platform = answers.platform || "Social Media";
+            const age = answers.age;
+            const yearsActive = answers.yearsActive || 0;
+            const hoursDaily = answers.hoursDaily || 0;
+            const totalHours = Math.round(yearsActive * 365 * hoursDaily);
+            const yearsConsumed = (totalHours / 8760).toFixed(1);
+            const lifeExpectancy = 78;
+            const yearsRemaining = lifeExpectancy - age;
+            const daysRemaining = Math.round(yearsRemaining * 365);
+
+            // Determine assignment based on usage
+            let room, roomDescription, duration;
+            const usageScore = hoursDaily * 10 + answers.opensDaily * 0.5 + (answers.postedToday === 'yes' ? 20 : 0);
+            
+            if (platform === "None" || hoursDaily < 1) {
+                room = "The Exit";
+                roomDescription = "You may leave. But you came here for a reason.";
+                duration = 5;
+            } else if (usageScore > 60) {
+                room = "The DMV";
+                roomDescription = "The waiting room. Where time moves differently.";
+                duration = Math.min(Math.round(hoursDaily * 10), 60);
+            } else {
+                room = "The Police Station";
+                roomDescription = "The interrogation room. Time to answer for yourself.";
+                duration = Math.min(Math.round(hoursDaily * 7), 45);
+            }
+
+            const now = new Date();
+            const appointmentTime = new Date(now.getTime() + 30 * 60000); // 30 minutes from now
+            const timeString = appointmentTime.toLocaleTimeString('en-US', { 
+                hour: 'numeric', 
+                minute: '2-digit',
+                hour12: true 
+            });
+
+            const verdict = `
+                <div class="verdict-title">DIGITAL DEATH CERTIFICATE</div>
+                
+                <div class="verdict-section">
+                    <div class="verdict-label">SUBJECT</div>
+                    <div class="verdict-value">${answers.name || 'Anonymous'}</div>
+                </div>
+
+                <div class="verdict-section">
+                    <div class="verdict-label">AGE</div>
+                    <div class="verdict-value">${age}</div>
+                </div>
+
+                <div class="verdict-section">
+                    <div class="verdict-label">PLATFORM OF CHOICE</div>
+                    <div class="verdict-value">${platform}</div>
+                </div>
+
+                <div class="verdict-section">
+                    <div class="verdict-label">YEARS ACTIVE</div>
+                    <div class="verdict-value">${yearsActive}</div>
+                </div>
+
+                <div class="verdict-section">
+                    <div class="verdict-label">DAILY HOURS CONSUMED</div>
+                    <div class="verdict-value">${hoursDaily}</div>
+                </div>
+
+                <div class="verdict-section">
+                    <div class="verdict-label">FINDINGS</div>
+                    <div class="verdict-value">
+                        • ${totalHours.toLocaleString()} hours consumed<br>
+                        • ${yearsConsumed} years of your life<br>
+                        • ${daysRemaining} days remaining at this rate
+                    </div>
+                </div>
+
+                <div class="diagnosis">
+                    DIAGNOSIS: ${usageScore > 60 ? 'Severe Digital Dependency' : usageScore > 30 ? 'Moderate Digital Consumption' : 'Minimal Digital Presence'}
+                </div>
+
+                <div class="assignment">
+                    <div class="verdict-label">ASSIGNED LOCATION</div>
+                    <div class="verdict-value" style="font-size: 24px; margin: 20px 0;">${room}</div>
+                    <div style="opacity: 0.7; margin-bottom: 20px;">${roomDescription}</div>
+                    
+                    <div class="verdict-label" style="margin-top: 25px;">APPOINTMENT</div>
+                    <div class="verdict-value">Today, ${timeString}</div>
+                    
+                    <div class="verdict-label" style="margin-top: 25px;">REQUIRED DURATION</div>
+                    <div class="verdict-value">${duration} minutes</div>
+                    
+                    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #333; font-size: 14px;">
+                        Bring nothing.<br>
+                        Especially not your phone.
+                    </div>
+                </div>
+
+                <div class="final-note">
+                    Your confession has been recorded.<br>
+                    It will be deleted when you close this window.<br>
+                    Just like everything else.
+                </div>
+            `;
+
+            document.getElementById('verdictContent').innerHTML = verdict;
+            setTimeout(() => showQuestion('verdict'), 2000);
+        }
+    </script>
+</body>
+</html>
