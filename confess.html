@@ -28,7 +28,7 @@
             padding: 40px;
         }
 
-        .question {
+        .screen {
             opacity: 0;
             min-height: 200px;
             display: none;
@@ -36,7 +36,7 @@
             justify-content: center;
         }
 
-        .question.active {
+        .screen.active {
             display: flex;
             animation: fadeIn 2s forwards;
         }
@@ -145,6 +145,27 @@
             letter-spacing: 2px;
         }
 
+        .room-assignment {
+            color: #8b0000;
+            font-size: 32px;
+            margin: 50px 0;
+            text-align: center;
+            letter-spacing: 3px;
+            text-shadow: 0 0 20px rgba(139, 0, 0, 0.8), 0 0 40px rgba(139, 0, 0, 0.4);
+            padding: 30px;
+            border: 2px solid #8b0000;
+            background: rgba(139, 0, 0, 0.05);
+        }
+
+        .room-description {
+            color: #d4d4d4;
+            font-size: 14px;
+            opacity: 0.7;
+            margin-top: 15px;
+            letter-spacing: 1px;
+            text-shadow: none;
+        }
+
         .assignment {
             border: 1px solid #333;
             padding: 30px;
@@ -163,17 +184,6 @@
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes typewriter {
-            from { width: 0; }
-            to { width: 100%; }
-        }
-
-        .typing {
-            overflow: hidden;
-            white-space: nowrap;
-            display: inline-block;
         }
 
         .radio-group {
@@ -204,32 +214,26 @@
     <div class="container">
         <div class="previous-answers" id="previousAnswers"></div>
         
-        <div id="intro" class="question active">
+        <div id="intro" class="screen active">
             <div class="intro">
-                <div class="typing" id="line1">How much time do you have left?</div>
-                <div class="typing" id="line2" style="display:none; margin-top: 40px;">Let's find out.</div>
+                <div>How much time do you have left?</div>
+                <div style="margin-top: 40px;">Let's find out.</div>
             </div>
         </div>
 
-        <div class="question" data-q="1">
+        <div class="screen" id="screen1">
             <div class="question-text">What is your name?<br><span style="font-size: 14px; opacity: 0.6;">Or leave it blank.</span></div>
             <input type="text" id="name" placeholder="Anonymous">
-            <button onclick="nextQuestion(1)" id="btn1">Continue</button>
+            <button onclick="advance(1)">Continue</button>
         </div>
 
-        <div class="question" data-q="2">
+        <div class="screen" id="screen2">
             <div class="question-text">How old are you?</div>
             <input type="number" id="age" min="13" max="100">
-            <button onclick="nextQuestion(2)" id="btn2" disabled>Continue</button>
+            <button onclick="advance(2)" id="btn2" disabled>Continue</button>
         </div>
 
-        <div class="question" data-q="2">
-            <div class="question-text">How old are you?</div>
-            <input type="number" id="age" min="13" max="100">
-            <button onclick="nextQuestion(2)" id="btn2" disabled>Continue</button>
-        </div>
-
-        <div class="question" data-q="3">
+        <div class="screen" id="screen3">
             <div class="question-text">Which platform do you use most?</div>
             <select id="platform">
                 <option value="">Select one</option>
@@ -240,28 +244,28 @@
                 <option value="Snapchat">Snapchat</option>
                 <option value="None">None / I don't use social media</option>
             </select>
-            <button onclick="nextQuestion(3)" id="btn3" disabled>Continue</button>
+            <button onclick="advance(3)" id="btn3" disabled>Continue</button>
         </div>
 
-        <div class="question" data-q="4">
+        <div class="screen" id="screen4">
             <div class="question-text">When did you join?</div>
             <input type="number" id="yearJoined" min="2004" max="2025" placeholder="Year">
-            <button onclick="nextQuestion(4)" id="btn4" disabled>Continue</button>
+            <button onclick="advance(4)" id="btn4" disabled>Continue</button>
         </div>
 
-        <div class="question" data-q="5">
+        <div class="screen" id="screen5">
             <div class="question-text">How many hours a day do you spend there?<br><span style="font-size: 14px; opacity: 0.6;">Be honest.</span></div>
             <input type="number" id="hoursDaily" min="0" max="24" step="0.5">
-            <button onclick="nextQuestion(5)" id="btn5" disabled>Continue</button>
+            <button onclick="advance(5)" id="btn5" disabled>Continue</button>
         </div>
 
-        <div class="question" data-q="6">
+        <div class="screen" id="screen6">
             <div class="question-text">How many times do you open it without thinking?</div>
             <input type="number" id="opensDaily" min="0" max="500">
-            <button onclick="nextQuestion(6)" id="btn6" disabled>Continue</button>
+            <button onclick="advance(6)" id="btn6" disabled>Continue</button>
         </div>
 
-        <div class="question" data-q="7">
+        <div class="screen" id="screen7">
             <div class="question-text">Have you posted today?</div>
             <div class="radio-group">
                 <div class="radio-option">
@@ -273,10 +277,10 @@
                     <label for="postedNo">No</label>
                 </div>
             </div>
-            <button onclick="nextQuestion(7)" id="btn7" disabled>Continue</button>
+            <button onclick="advance(7)" id="btn7" disabled>Continue</button>
         </div>
 
-        <div class="question" data-q="8">
+        <div class="screen" id="screen8">
             <div class="question-text">When was the last time you were bored without reaching for your phone?</div>
             <select id="lastBored">
                 <option value="">Select one</option>
@@ -286,10 +290,10 @@
                 <option value="year">This year</option>
                 <option value="never">I can't remember</option>
             </select>
-            <button onclick="nextQuestion(8)" id="btn8" disabled>Continue</button>
+            <button onclick="advance(8)" id="btn8" disabled>Continue</button>
         </div>
 
-        <div class="question" data-q="9">
+        <div class="screen" id="screen9">
             <div class="question-text">Do you think you're afraid of dying?</div>
             <div class="radio-group">
                 <div class="radio-option">
@@ -305,32 +309,23 @@
                     <label for="afraidUnsure">I don't know</label>
                 </div>
             </div>
-            <button onclick="nextQuestion(9)" id="btn9" disabled>Continue</button>
+            <button onclick="advance(9)" id="btn9" disabled>Continue</button>
         </div>
 
-        <div class="question" data-q="verdict" id="verdictSection">
+        <div class="screen" id="verdictScreen">
             <div class="verdict" id="verdictContent"></div>
         </div>
     </div>
 
     <script>
-        let currentQ = 0;
         const answers = {};
-        let canProgress = false;
+        let currentScreen = 0;
 
         // Intro animation
         setTimeout(() => {
-            document.getElementById('line1').style.animation = 'typewriter 2s steps(30)';
             setTimeout(() => {
-                document.getElementById('line2').style.display = 'block';
-                document.getElementById('line2').style.animation = 'typewriter 1.5s steps(20)';
-                setTimeout(() => {
-                    canProgress = true;
-                    setTimeout(() => {
-                        if (canProgress) showQuestion(1);
-                    }, 2000);
-                }, 2000);
-            }, 3000);
+                showScreen(1);
+            }, 4000);
         }, 1000);
 
         // Input validation
@@ -370,71 +365,19 @@
             });
         });
 
-        function showQuestion(n) {
-            const current = document.querySelector('.question.active');
+        function showScreen(n) {
+            const current = document.querySelector('.screen.active');
             if (current) {
                 current.classList.remove('active');
             }
             
             setTimeout(() => {
-                let next;
-                if (n === 'verdict') {
-                    next = document.getElementById('verdictSection');
-                } else {
-                    next = document.querySelector(`[data-q="${n}"]`);
-                }
+                const next = document.getElementById(n === 'verdict' ? 'verdictScreen' : `screen${n}`);
                 if (next) {
                     next.classList.add('active');
-                    currentQ = n;
+                    currentScreen = n;
                 }
             }, 800);
-        }
-
-        function nextQuestion(n) {
-            // Save answer
-            switch(n) {
-                case 1:
-                    answers.name = document.getElementById('name').value.trim() || 'Anonymous';
-                    if (answers.name !== 'Anonymous') {
-                        updatePrevious(`Name: ${answers.name}`);
-                    }
-                    break;
-                case 2:
-                    answers.age = parseInt(document.getElementById('age').value);
-                    updatePrevious(`Age: ${answers.age}`);
-                    break;
-                case 3:
-                    answers.platform = document.getElementById('platform').value;
-                    updatePrevious(`Platform: ${answers.platform}`);
-                    break;
-                case 4:
-                    answers.yearJoined = parseInt(document.getElementById('yearJoined').value);
-                    answers.yearsActive = 2025 - answers.yearJoined;
-                    updatePrevious(`Joined: ${answers.yearJoined}`);
-                    break;
-                case 5:
-                    answers.hoursDaily = parseFloat(document.getElementById('hoursDaily').value);
-                    updatePrevious(`Daily: ${answers.hoursDaily}h`);
-                    break;
-                case 6:
-                    answers.opensDaily = parseInt(document.getElementById('opensDaily').value);
-                    updatePrevious(`Opens: ${answers.opensDaily}/day`);
-                    break;
-                case 7:
-                    answers.postedToday = document.querySelector('input[name="posted"]:checked').value;
-                    break;
-                case 8:
-                    answers.lastBored = document.getElementById('lastBored').value;
-                    break;
-                case 9:
-                    answers.afraid = document.querySelector('input[name="afraid"]:checked').value;
-                    setTimeout(() => showVerdict(), 3000);
-                    return;
-            }
-
-            if (n < 9) {
-                setTimeout(() => showQuestion(n + 1), 1500);
-            }
         }
 
         function updatePrevious(text) {
@@ -442,11 +385,67 @@
             prev.innerHTML += text + '<br>';
         }
 
-        function showVerdict() {
-            const current = document.querySelector('.question.active');
-            current.classList.remove('active');
+        function advance(step) {
+            switch(step) {
+                case 1:
+                    answers.name = document.getElementById('name').value.trim() || 'Anonymous';
+                    if (answers.name !== 'Anonymous') {
+                        updatePrevious(`Name: ${answers.name}`);
+                    }
+                    showScreen(2);
+                    break;
+                case 2:
+                    answers.age = parseInt(document.getElementById('age').value);
+                    updatePrevious(`Age: ${answers.age}`);
+                    showScreen(3);
+                    break;
+                case 3:
+                    answers.platform = document.getElementById('platform').value;
+                    updatePrevious(`Platform: ${answers.platform}`);
+                    if (answers.platform === 'None') {
+                        answers.yearJoined = 2025;
+                        answers.yearsActive = 0;
+                        answers.hoursDaily = 0;
+                        answers.opensDaily = 0;
+                        answers.postedToday = 'no';
+                        answers.lastBored = 'today';
+                        setTimeout(() => generateVerdict(), 3000);
+                        return;
+                    }
+                    showScreen(4);
+                    break;
+                case 4:
+                    answers.yearJoined = parseInt(document.getElementById('yearJoined').value);
+                    answers.yearsActive = 2025 - answers.yearJoined;
+                    updatePrevious(`Joined: ${answers.yearJoined}`);
+                    showScreen(5);
+                    break;
+                case 5:
+                    answers.hoursDaily = parseFloat(document.getElementById('hoursDaily').value);
+                    updatePrevious(`Daily: ${answers.hoursDaily}h`);
+                    showScreen(6);
+                    break;
+                case 6:
+                    answers.opensDaily = parseInt(document.getElementById('opensDaily').value);
+                    updatePrevious(`Opens: ${answers.opensDaily}/day`);
+                    showScreen(7);
+                    break;
+                case 7:
+                    answers.postedToday = document.querySelector('input[name="posted"]:checked').value;
+                    showScreen(8);
+                    break;
+                case 8:
+                    answers.lastBored = document.getElementById('lastBored').value;
+                    showScreen(9);
+                    break;
+                case 9:
+                    answers.afraid = document.querySelector('input[name="afraid"]:checked').value;
+                    setTimeout(() => generateVerdict(), 3000);
+                    break;
+            }
+        }
 
-            // Calculate metrics
+        function generateVerdict() {
             const platform = answers.platform || "Social Media";
             const age = answers.age;
             const yearsActive = answers.yearsActive || 0;
@@ -459,7 +458,9 @@
 
             // Determine assignment based on usage
             let room, roomDescription, duration;
-            const usageScore = hoursDaily * 10 + answers.opensDaily * 0.5 + (answers.postedToday === 'yes' ? 20 : 0);
+            const usageScore = hoursDaily * 10 + (answers.opensDaily || 0) * 0.5 + (answers.postedToday === 'yes' ? 20 : 0);
+            
+            console.log('Usage Score:', usageScore); // Debug
             
             if (platform === "None" || hoursDaily < 1) {
                 room = "The Exit";
@@ -475,15 +476,17 @@
                 duration = Math.min(Math.round(hoursDaily * 7), 45);
             }
 
+            console.log('Room:', room); // Debug
+
             const now = new Date();
-            const appointmentTime = new Date(now.getTime() + 30 * 60000); // 30 minutes from now
+            const appointmentTime = new Date(now.getTime() + 30 * 60000);
             const timeString = appointmentTime.toLocaleTimeString('en-US', { 
                 hour: 'numeric', 
                 minute: '2-digit',
                 hour12: true 
             });
 
-            const verdict = `
+            const verdictHTML = `
                 <div class="verdict-title">DIGITAL DEATH CERTIFICATE</div>
                 
                 <div class="verdict-section">
@@ -524,12 +527,13 @@
                     DIAGNOSIS: ${usageScore > 60 ? 'Severe Digital Dependency' : usageScore > 30 ? 'Moderate Digital Consumption' : 'Minimal Digital Presence'}
                 </div>
 
+                <div class="room-assignment">
+                    ${room}
+                    <div class="room-description">${roomDescription}</div>
+                </div>
+
                 <div class="assignment">
-                    <div class="verdict-label">ASSIGNED LOCATION</div>
-                    <div class="verdict-value" style="font-size: 24px; margin: 20px 0;">${room}</div>
-                    <div style="opacity: 0.7; margin-bottom: 20px;">${roomDescription}</div>
-                    
-                    <div class="verdict-label" style="margin-top: 25px;">APPOINTMENT</div>
+                    <div class="verdict-label">APPOINTMENT</div>
                     <div class="verdict-value">Today, ${timeString}</div>
                     
                     <div class="verdict-label" style="margin-top: 25px;">REQUIRED DURATION</div>
@@ -548,8 +552,8 @@
                 </div>
             `;
 
-            document.getElementById('verdictContent').innerHTML = verdict;
-            setTimeout(() => showQuestion('verdict'), 2000);
+            document.getElementById('verdictContent').innerHTML = verdictHTML;
+            showScreen('verdict');
         }
     </script>
 </body>
