@@ -38,6 +38,7 @@
         .screen.active {
             display: flex;
             opacity: 1;
+            animation: fadeIn 0.5s;
         }
 
         .question-text {
@@ -322,21 +323,24 @@
                 <button onclick="showFinalVerdict()" style="font-size: 16px; padding: 15px 40px;">
                     RECEIVE VERDICT
                 </button>
-                <br><br>
-                <button onclick="testVerdict()" style="font-size: 12px; padding: 10px 20px; opacity: 0.5;">
-                    TEST - Force Show Verdict
-                </button>
             </div>
         </div>
 
         <div class="screen" id="verdictScreen">
             <div class="verdict" id="verdictContent"></div>
         </div>
+
+        <div class="screen" id="roomRevealScreen">
+            <div style="text-align: center; min-height: 300px; display: flex; align-items: center; justify-content: center;">
+                <div id="roomReveal"></div>
+            </div>
+        </div>
     </div>
 
     <script>
         const answers = {};
         let currentScreen = 0;
+        let verdictGenerated = false;
 
         // Intro animation
         setTimeout(() => {
@@ -383,10 +387,8 @@
         });
 
         function showScreen(n) {
-            const current = document.querySelector('.screen.active');
-            if (current) {
-                current.classList.remove('active');
-            }
+            const screens = document.querySelectorAll('.screen');
+            screens.forEach(s => s.classList.remove('active'));
             
             setTimeout(() => {
                 let next;
@@ -394,6 +396,8 @@
                     next = document.getElementById('verdictScreen');
                 } else if (n === 'waiting') {
                     next = document.getElementById('waitingScreen');
+                } else if (n === 'roomReveal') {
+                    next = document.getElementById('roomRevealScreen');
                 } else {
                     next = document.getElementById(`screen${n}`);
                 }
@@ -401,7 +405,7 @@
                     next.classList.add('active');
                     currentScreen = n;
                 }
-            }, 800);
+            }, 600);
         }
 
         function updatePrevious(text) {
@@ -433,10 +437,10 @@
                         answers.opensDaily = 0;
                         answers.postedToday = 'no';
                         answers.lastBored = 'today';
+                        generateVerdict();
                         setTimeout(() => {
-                            generateVerdict();
                             showScreen('waiting');
-                        }, 3000);
+                        }, 1000);
                         return;
                     }
                     showScreen(4);
@@ -467,10 +471,10 @@
                     break;
                 case 9:
                     answers.afraid = document.querySelector('input[name="afraid"]:checked').value;
+                    generateVerdict();
                     setTimeout(() => {
-                        generateVerdict();
                         showScreen('waiting');
-                    }, 3000);
+                    }, 1000);
                     break;
             }
         }
@@ -486,17 +490,9 @@
             const yearsRemaining = lifeExpectancy - age;
             const daysRemaining = Math.round(yearsRemaining * 365);
 
-            // Debug logging
-            console.log('All answers:', answers);
-            console.log('Hours Daily:', hoursDaily);
-            console.log('Opens Daily:', answers.opensDaily);
-            console.log('Posted Today:', answers.postedToday);
-
             // Determine assignment based on usage
             let room, roomDescription, duration;
             const usageScore = hoursDaily * 10 + (answers.opensDaily || 0) * 0.5 + (answers.postedToday === 'yes' ? 20 : 0);
-            
-            console.log('Usage Score:', usageScore);
             
             if (platform === "None" || hoursDaily < 1) {
                 room = "The Exit";
@@ -511,9 +507,6 @@
                 roomDescription = "The interrogation room. Time to answer for yourself.";
                 duration = Math.min(Math.round(hoursDaily * 7), 45);
             }
-
-            console.log('Assigned Room:', room);
-            console.log('Room Description:', roomDescription);
 
             const now = new Date();
             const appointmentTime = new Date(now.getTime() + 30 * 60000);
@@ -564,7 +557,7 @@
                     DIAGNOSIS: ${usageScore > 60 ? 'Severe Digital Dependency' : usageScore > 30 ? 'Moderate Digital Consumption' : 'Minimal Digital Presence'}
                 </div>
 
-                <div class="room-assignment">
+                <div class="room-assignment" id="roomAssignmentFull">
                     ASSIGNED ROOM: ${room}
                     <div class="room-description">${roomDescription}</div>
                 </div>
@@ -589,37 +582,38 @@
                 </div>
             `;
 
-            console.log('Generated HTML contains room:', verdictHTML.includes(room));
+            // Store the room info separately for later
+            answers.room = room;
+            answers.roomDescription = roomDescription;
+
             document.getElementById('verdictContent').innerHTML = verdictHTML;
+            verdictGenerated = true;
         }
 
         function showFinalVerdict() {
-            console.log('Showing final verdict screen');
-            console.log('Verdict content element exists:', !!document.getElementById('verdictContent'));
-            console.log('Verdict content innerHTML length:', document.getElementById('verdictContent').innerHTML.length);
-            console.log('Verdict screen element:', document.getElementById('verdictScreen'));
+            if (!verdictGenerated) {
+                alert('Verdict not ready. Please try again.');
+                return;
+            }
+            
             showScreen('verdict');
             
-            // Force check after animation
+            // After 8 seconds, show just the room assignment
             setTimeout(() => {
-                const verdictScreen = document.getElementById('verdictScreen');
-                console.log('Verdict screen is active:', verdictScreen.classList.contains('active'));
-                console.log('Verdict screen display:', window.getComputedStyle(verdictScreen).display);
-                console.log('Verdict screen opacity:', window.getComputedStyle(verdictScreen).opacity);
-            }, 1000);
+                showRoomReveal();
+            }, 8000);
         }
 
-        function testVerdict() {
-            // Brutally force it to show
-            const waitingScreen = document.getElementById('waitingScreen');
-            const verdictScreen = document.getElementById('verdictScreen');
+        function showRoomReveal() {
+            const roomHTML = `
+                <div class="room-assignment">
+                    ASSIGNED ROOM: ${answers.room}
+                    <div class="room-description">${answers.roomDescription}</div>
+                </div>
+            `;
             
-            waitingScreen.style.display = 'none';
-            verdictScreen.style.display = 'flex';
-            verdictScreen.style.opacity = '1';
-            verdictScreen.classList.add('active');
-            
-            console.log('FORCED verdict screen visible');
+            document.getElementById('roomReveal').innerHTML = roomHTML;
+            showScreen('roomReveal');
         }
     </script>
 </body>
