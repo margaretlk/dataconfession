@@ -4,211 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Confession</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    <link rel="stylesheet" href="confession.css">
 
-        body {
-            background: #000;
-            color: #d4d4d4;
-            font-family: 'Courier New', monospace;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .container {
-            max-width: 700px;
-            width: 90%;
-            padding: 40px;
-        }
-
-        .screen {
-            min-height: 200px;
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .screen.active {
-            display: flex;
-            opacity: 1;
-            animation: fadeIn 0.5s;
-        }
-
-        .question-text {
-            font-size: 24px;
-            line-height: 1.6;
-            margin-bottom: 40px;
-            letter-spacing: 0.5px;
-        }
-
-        .previous-answers {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            font-size: 11px;
-            opacity: 0.3;
-            max-width: 200px;
-            text-align: right;
-            line-height: 1.8;
-        }
-
-        input[type="number"],
-        input[type="text"],
-        select {
-            background: #0a0a0a;
-            border: 1px solid #333;
-            color: #d4d4d4;
-            padding: 15px;
-            font-family: 'Courier New', monospace;
-            font-size: 18px;
-            width: 100%;
-            max-width: 300px;
-            margin-bottom: 20px;
-        }
-
-        input:focus,
-        select:focus {
-            outline: none;
-            border-color: #666;
-        }
-
-        button {
-            background: transparent;
-            border: 1px solid #444;
-            color: #d4d4d4;
-            padding: 12px 30px;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s;
-            letter-spacing: 1px;
-        }
-
-        button:hover:not(:disabled) {
-            border-color: #888;
-            background: #111;
-        }
-
-        button:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-
-        .intro {
-            text-align: center;
-            font-size: 28px;
-            line-height: 2;
-            letter-spacing: 1px;
-        }
-
-        .verdict {
-            font-size: 16px;
-            line-height: 2.2;
-            letter-spacing: 0.5px;
-        }
-
-        .verdict-title {
-            font-size: 20px;
-            margin-bottom: 30px;
-            letter-spacing: 2px;
-            border-bottom: 1px solid #333;
-            padding-bottom: 15px;
-        }
-
-        .verdict-section {
-            margin: 25px 0;
-        }
-
-        .verdict-label {
-            opacity: 0.6;
-            font-size: 12px;
-            letter-spacing: 1px;
-        }
-
-        .verdict-value {
-            font-size: 18px;
-            margin: 5px 0 15px 0;
-        }
-
-        .diagnosis {
-            color: #8b0000;
-            font-size: 22px;
-            margin: 40px 0;
-            text-align: center;
-            letter-spacing: 2px;
-        }
-
-        .room-assignment {
-            color: #8b0000;
-            font-size: 32px;
-            margin: 50px 0;
-            text-align: center;
-            letter-spacing: 3px;
-            text-shadow: 0 0 20px rgba(139, 0, 0, 0.8), 0 0 40px rgba(139, 0, 0, 0.4);
-            padding: 30px;
-            border: 2px solid #8b0000;
-            background: rgba(139, 0, 0, 0.05);
-        }
-
-        .room-description {
-            color: #d4d4d4;
-            font-size: 14px;
-            opacity: 0.7;
-            margin-top: 15px;
-            letter-spacing: 1px;
-            text-shadow: none;
-        }
-
-        .assignment {
-            border: 1px solid #333;
-            padding: 30px;
-            margin: 40px 0;
-            background: #0a0a0a;
-        }
-
-        .final-note {
-            margin-top: 50px;
-            opacity: 0.5;
-            font-size: 12px;
-            text-align: center;
-            font-style: italic;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .radio-group {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .radio-option {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .radio-option input[type="radio"] {
-            width: auto;
-            margin: 0;
-        }
-
-        .radio-option label {
-            cursor: pointer;
-            font-size: 16px;
-        }
-    </style>
 </head>
 <body>
     <div class="container">
@@ -249,7 +46,7 @@
 
         <div class="screen" id="screen4">
             <div class="question-text">When did you join?</div>
-            <input type="number" id="yearJoined" min="2004" max="2025" placeholder="Year">
+            <input type="number" id="yearJoined" min="2000" max="2025" placeholder="Year">
             <button onclick="advance(4)" id="btn4" disabled>Continue</button>
         </div>
 
@@ -260,7 +57,7 @@
         </div>
 
         <div class="screen" id="screen6">
-            <div class="question-text">How many times do you open it without thinking?</div>
+            <div class="question-text">How many times a day do you open it without thinking?</div>
             <input type="number" id="opensDaily" min="0" max="500">
             <button onclick="advance(6)" id="btn6" disabled>Continue</button>
         </div>
@@ -314,10 +111,10 @@
 
         <div class="screen" id="waitingScreen">
             <div style="text-align: center;">
-                <div style="font-size: 20px; margin-bottom: 40px; letter-spacing: 2px;">
-                    Processing your confession...
+              <div class="loading">Processing your confession</div>
+                         
                 </div>
-                <div style="font-size: 16px; opacity: 0.6; margin-bottom: 50px;">
+                <div style="font-size: 16px; opacity: 0.6; margin-bottom: 50px; text-align: center;">
                     Your judgment is being prepared.
                 </div>
                 <button onclick="showFinalVerdict()" style="font-size: 16px; padding: 15px 40px;">
@@ -496,15 +293,15 @@
             
             if (platform === "None" || hoursDaily < 1) {
                 room = "The Exit";
-                roomDescription = "You may leave. But you came here for a reason.";
+                roomDescription = "Get a drink. Stay awhile. <br> Please refresh this page for our next guest.";
                 duration = 5;
             } else if (usageScore > 60) {
                 room = "The DMV";
-                roomDescription = "The waiting room. Where time moves differently.";
+                roomDescription = "The waiting room. Where time moves differently. <br> Please refresh this page for our next guest.";
                 duration = Math.min(Math.round(hoursDaily * 10), 60);
             } else {
-                room = "The Police Station";
-                roomDescription = "The interrogation room. Time to answer for yourself.";
+                room = "The Park";
+                roomDescription = "What's that attached to the lamp post? <br> Please refresh this page for our next guest.";
                 duration = Math.min(Math.round(hoursDaily * 7), 45);
             }
 
@@ -517,7 +314,9 @@
             });
 
             const verdictHTML = `
-                <div class="verdict-title">DIGITAL DEATH CERTIFICATE</div>
+            <div style="text-align: center; overflow; auto:">
+                     <div class="verdict-title">DIGITAL DEATH CERTIFICATE</div>
+            
                 
                 <div class="verdict-section">
                     <div class="verdict-label">SUBJECT</div>
@@ -557,29 +356,18 @@
                     DIAGNOSIS: ${usageScore > 60 ? 'Severe Digital Dependency' : usageScore > 30 ? 'Moderate Digital Consumption' : 'Minimal Digital Presence'}
                 </div>
 
-                <div class="room-assignment" id="roomAssignmentFull">
-                    ASSIGNED ROOM: ${room}
-                    <div class="room-description">${roomDescription}</div>
-                </div>
-
-                <div class="assignment">
-                    <div class="verdict-label">APPOINTMENT</div>
-                    <div class="verdict-value">Today, ${timeString}</div>
-                    
-                    <div class="verdict-label" style="margin-top: 25px;">REQUIRED DURATION</div>
-                    <div class="verdict-value">${duration} minutes</div>
-                    
-                    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #333; font-size: 14px;">
-                        Bring nothing.<br>
-                        Especially not your phone.
-                    </div>
+             <div class="room-assignment" id="roomAssignmentFull" style="text-align; center: display: none;">
+                 ASSIGNED ROOM: ${room}
+                 <div class="room-description">${roomDescription}</div>
                 </div>
 
                 <div class="final-note">
                     Your confession has been recorded.<br>
-                    It will be deleted when you close this window.<br>
-                    Just like everything else.
+                    It will be deleted when you restart this window. Not like your digital ash. <br>
+                
                 </div>
+
+            </div>
             `;
 
             // Store the room info separately for later
@@ -597,12 +385,8 @@
             }
             
             showScreen('verdict');
-            
-            // After 8 seconds, show just the room assignment
-            setTimeout(() => {
-                showRoomReveal();
-            }, 8000);
         }
+
 
         function showRoomReveal() {
             const roomHTML = `
@@ -614,7 +398,11 @@
             
             document.getElementById('roomReveal').innerHTML = roomHTML;
             showScreen('roomReveal');
+
+
         }
+        
     </script>
 </body>
+
 </html>
