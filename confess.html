@@ -293,8 +293,8 @@
             const usageScore = hoursDaily * 10 + (answers.opensDaily || 0) * 0.5 + (answers.postedToday === 'yes' ? 20 : 0);
             
             if (platform === "None" || hoursDaily < 1) {
-                room = "The Exit";
-                roomDescription = "Get a drink. Stay awhile. <br> Please refresh this page for our next guest.";
+                room = "The Bar";
+                roomDescription = "You think you're free? You're still drinking the Kool-Aid. Come chat.";
                 duration = 5;
             } else if (usageScore > 60) {
                 room = "The DMV";
@@ -384,10 +384,10 @@
                 alert('Verdict not ready. Please try again.');
                 return;
             }
-            
             showScreen('verdict');
         }
 
+        
 
         function showRoomReveal() {
             const roomHTML = `
